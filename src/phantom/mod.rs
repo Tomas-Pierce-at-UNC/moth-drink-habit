@@ -2,6 +2,7 @@
 mod cine_types;
 mod null_error;
 
+
 use null_error::NullError;
 
 pub use cine_types::{
@@ -17,6 +18,10 @@ extern {
 
     fn get_image_count(cfh :*const CineFileHeader) -> i32;
     fn get_image_offsets(fd :libc::c_int, cfh :*const CineFileHeader) -> *const i64;
+    fn get_bit_count(bih :*const BitmapInfoHeader) -> u16;
+    fn get_frame_rate(setup :*const Setup) -> u32;
+
+    fn get_image_size(bih :*const BitmapInfoHeader) -> u32;
 }
 
 use std::os::unix::io::AsRawFd;
@@ -100,4 +105,22 @@ pub fn locate_images(file :&mut fs::File) -> Result<Vec<u64>, NullError> {
     let count = count_images(cfh);
     let vector = pointer_to_vector(offsets, count);
     Ok(vector)
+}
+
+pub fn get_size_of_images(bih :*const BitmapInfoHeader) -> u32 {
+    unsafe {
+        get_image_size(bih)
+    }
+}
+
+pub fn get_bit_depth(bih :*const BitmapInfoHeader) -> u16 {
+    unsafe {
+        get_bit_count(bih)
+    }
+}
+
+pub fn get_fps(setup :*const Setup) -> u32 {
+    unsafe {
+        get_frame_rate(setup)
+    }
 }

@@ -37,3 +37,13 @@ int64_t* get_image_offsets(int fd, CINEFILEHEADER *cfh) {
     return offsets;
     
 }
+
+uint16_t get_bit_count(BITMAPINFOHEADER *bih) {
+    return bih->biBitCount;
+}
+
+uint32_t get_frame_rate(SETUP *setup) {
+    return setup->FrameRate;
+}
+
+
